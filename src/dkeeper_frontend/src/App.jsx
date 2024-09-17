@@ -1,30 +1,43 @@
-import { useState } from 'react';
-import { dkeeper_backend } from 'declarations/dkeeper_backend';
+import React, { useState } from "react";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import Note from "./components/Note";
+import CreateArea from "./components/CreateArea";
 
 function App() {
-  const [greeting, setGreeting] = useState('');
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    const name = event.target.elements.name.value;
-    dkeeper_backend.greet(name).then((greeting) => {
-      setGreeting(greeting);
+  const [notes, setNotes] = useState([]);
+
+  function saveElement(note) {
+    setNotes( (prev) => {
+      return [...prev, note] ;
     });
-    return false;
-  }
+    }
+
+    function deleteNote(id) {
+      setNotes( prev => {
+        return prev.filter((prev, index) => {
+          return index != id ;
+        })
+      })
+    }
 
   return (
-    <main>
-      <img src="/logo2.svg" alt="DFINITY logo" />
-      <br />
-      <br />
-      <form action="#" onSubmit={handleSubmit}>
-        <label htmlFor="name">Enter your name: &nbsp;</label>
-        <input id="name" alt="Name" type="text" />
-        <button type="submit">Click Me!</button>
-      </form>
-      <section id="greeting">{greeting}</section>
-    </main>
+    <div>
+      <Header />
+      <CreateArea onSave={saveElement} />
+      {notes.map((note, index) => {
+        return( 
+          <Note
+          key={index}
+          title={note.title} 
+          content={note.content} 
+          id={index} 
+          onDelete={deleteNote} />
+          );
+      })}
+      <Footer />
+    </div>
   );
 }
 
