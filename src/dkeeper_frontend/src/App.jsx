@@ -26,12 +26,13 @@ function App() {
     setNotes(notesArray);
   };
 
-  function deleteNote(id) {
+  function deleteNote(id) { 
+    dkeeper_backend.removeNote(id);
     setNotes( prev => {
       return prev.filter((prev, index) => {
         return index != id ;
-      })
-    })
+      });
+    });
   }
 
   return (
