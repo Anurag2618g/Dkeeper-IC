@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Note from "./components/Note";
 import CreateArea from "./components/CreateArea";
+import { dkeeper_backend } from "../../declarations/dkeeper_backend";
+
 
 function App() {
 
@@ -10,17 +12,27 @@ function App() {
 
   function saveElement(note) {
     setNotes( (prev) => {
-      return [...prev, note] ;
+      dkeeper_backend.CreateNotes(note.title, note.content);
+      return [note, ...prev] ;
     });
     }
 
-    function deleteNote(id) {
-      setNotes( prev => {
-        return prev.filter((prev, index) => {
-          return index != id ;
-        })
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  async function fetchData() {
+    const notesArray = await dkeeper_backend.readNotes();
+    setNotes(notesArray);
+  };
+
+  function deleteNote(id) {
+    setNotes( prev => {
+      return prev.filter((prev, index) => {
+        return index != id ;
       })
-    }
+    })
+  }
 
   return (
     <div>
